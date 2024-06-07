@@ -4,7 +4,8 @@ from detect import FaceDetector
 from joblib import load
 
 # Load the model train
-model = load(".\\model\\model_adam_relu_3_64.joblib")
+modelNN = load(".\\model\\model_adam_relu_3_64.joblib")
+modelSVM = load(".\\model\\modelSVM.joblib")
 
 # Load InsightFace model
 detector = FaceDetector()
@@ -15,7 +16,8 @@ while True:
     ret, frame = cap.read()
     if not ret:
         continue
-        
+    
+    
     detected_faces = detector.detect(frame)
         
     for result in detected_faces:
@@ -27,7 +29,7 @@ while True:
             embedding = face.embedding
             embedding = np.array(embedding).reshape(1, -1)
 
-            predictions = model.predict(embedding)
+            predictions = modelSVM.predict(embedding)
             predicted_label = predictions[0]
             
             predicted_label = f"Person {predicted_label}"
@@ -52,3 +54,4 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+
