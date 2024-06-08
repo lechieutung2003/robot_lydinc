@@ -6,6 +6,7 @@ from joblib import load
 # Load the model train
 model = load(".\\model\\model_adam_relu_3_64.joblib")
 
+
 # Load InsightFace model
 detector = FaceDetector()
 
@@ -27,10 +28,17 @@ while True:
             embedding = face.embedding
             embedding = np.array(embedding).reshape(1, -1)
 
-            predictions = model.predict(embedding)
-            predicted_label = predictions[0]
+            predictions = model.predict_proba(embedding)
+            max_probability = np.max(predictions)
+            predicted_label = model.classes_[np.argmax(predictions)]
+            # predicted_label = predictions[0]
             
-            predicted_label = f"Person {predicted_label}"
+            if max_probability > 0.8:
+                predicted_label = f"Person {predicted_label}"
+            elif max_probability < 0.5:
+                predicted_label = "Unknown"
+            else:
+                continue   
                 
             cv2.rectangle(frame, (x, y), (w, h), (0, 255, 0), 2)
             cv2.putText(
