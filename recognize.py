@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from detect import FaceDetector
 from joblib import load
+import os
 
 # Load the model train
 model = load(".\\model\\model_adam_relu_3_64.joblib")
@@ -11,6 +12,7 @@ model = load(".\\model\\model_adam_relu_3_64.joblib")
 detector = FaceDetector()
 
 cap = cv2.VideoCapture(0)
+img_counter = 0
 
 while True:
     ret, frame = cap.read()
@@ -33,13 +35,18 @@ while True:
             predicted_label = model.classes_[np.argmax(predictions)]
             # predicted_label = predictions[0]
             
-            if max_probability > 0.8:
+            if max_probability > 0.5:
                 predicted_label = f"Person {predicted_label}"
-            elif max_probability < 0.5:
-                predicted_label = "Unknown"
             else:
-                continue   
-                
+                predicted_label = "Unknown"
+
+              
+            # Save the detected face to a folder named after the person detected
+            os.makedirs(predicted_label, exist_ok=True)
+            face_img = frame[y:h, x:w]
+            cv2.imwrite(f"{predicted_label}/face_{img_counter}.jpg", face_img)
+            img_counter += 1
+              
             cv2.rectangle(frame, (x, y), (w, h), (0, 255, 0), 2)
             cv2.putText(
                 frame,
