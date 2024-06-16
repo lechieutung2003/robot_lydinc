@@ -34,10 +34,12 @@ while True:
 
             # Use max voting
             final_predictions = np.argmax(predictions1 + predictions2, axis=1)
-            max_probability = np.max(final_predictions)
             predicted_label = modelNN.classes_[final_predictions[0]]
 
-            if max_probability > 0.7:
+            # Get max probability
+            max_probability = np.max(predictions1 + predictions2)
+
+            if max_probability > 0.8:
                 predicted_label = f"Person {predicted_label}"
             else:
                 predicted_label = "Unknown"
