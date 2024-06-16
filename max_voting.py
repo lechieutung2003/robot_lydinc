@@ -37,6 +37,11 @@ while True:
             max_probability = np.max(final_predictions)
             predicted_label = modelNN.classes_[final_predictions[0]]
 
+            if max_probability > 0.7:
+                predicted_label = f"Person {predicted_label}"
+            else:
+                predicted_label = "Unknown"
+            
             cv2.rectangle(frame, (x, y), (w, h), (0, 255, 0), 2)
             cv2.putText(
                 frame,
