@@ -7,13 +7,13 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
 import joblib
 
-df_train = pd.read_csv(".\\csv\\train.csv")
-df_testWM = pd.read_csv(".\\csv\\testWM.csv")
-df_testMM = pd.read_csv(".\\csv\\testMM.csv")
-df_testHM = pd.read_csv(".\\csv\\testHM.csv")
-df_submisWM = pd.read_csv(".\\csv\\submissionWM.csv")
-df_submisMM = pd.read_csv(".\\csv\\submissionMM.csv")
-df_submisHM = pd.read_csv(".\\csv\\submissionHM.csv")
+df_train = pd.read_csv(".\\csv\\SFace\\train.csv")
+df_testWM = pd.read_csv(".\\csv\\SFace\\test_WM.csv")
+df_testMM = pd.read_csv(".\\csv\\SFace\\test_MM.csv")
+df_testHM = pd.read_csv(".\\csv\\SFace\\test_HM.csv")
+df_submisWM = pd.read_csv(".\\csv\\SFace\\submission_WM.csv")
+df_submisMM = pd.read_csv(".\\csv\\SFace\\submission_MM.csv")
+df_submisHM = pd.read_csv(".\\csv\\SFace\\submission_HM.csv")
 
 # Split images & labels as X & y
 X_train = df_train.drop("label", axis=1)
@@ -78,7 +78,7 @@ def model():
                     model.fit(X_train, y_train)
                     
                     # Save model
-                    joblib.dump(model, f".\\model\\modelNN_{solver}_{activation}_{layer}_{layer_inits}.joblib")  
+                    joblib.dump(model, f".\\model\\modelNN_SFace_{solver}_{activation}_{layer}_{layer_inits}.joblib")  
                     
                     accuracy_model = model.score(X_train, y_train)
                     
@@ -106,7 +106,7 @@ def evaluation_model(model, X_test, y_test, message):
     accuracy = accuracy_score(y_test, y_pred)
     evaluation_report = classification_report(y_test, y_pred)
 
-    with open(".\\evaluate\\model.txt", "a") as f:
+    with open(".\\evaluate\\model_SFace.txt", "a") as f:
         f.write(f"============= {message} =============")
         f.write("\n")
         f.write(f"Testing the trained model:")

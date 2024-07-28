@@ -33,13 +33,13 @@ def evaluation_model(model, X_test, y_test, message):
         f.write("\n")
 
 
-df_train = pd.read_csv(".\\csv\\train.csv")
-df_testWM = pd.read_csv(".\\csv\\testWM.csv")
-df_testMM = pd.read_csv(".\\csv\\testMM.csv")
-df_testHM = pd.read_csv(".\\csv\\testHM.csv")
-df_submisWM = pd.read_csv(".\\csv\\submissionWM.csv")
-df_submisMM = pd.read_csv(".\\csv\\submissionMM.csv")
-df_submisHM = pd.read_csv(".\\csv\\submissionHM.csv")
+df_train = pd.read_csv(".\\csv\\SFace\\train.csv")
+df_testWM = pd.read_csv(".\\csv\\SFace\\test_WM.csv")
+df_testMM = pd.read_csv(".\\csv\\SFace\\test_MM.csv")
+df_testHM = pd.read_csv(".\\csv\\SFace\\test_HM.csv")
+df_submisWM = pd.read_csv(".\\csv\\SFace\\submission_WM.csv")
+df_submisMM = pd.read_csv(".\\csv\\SFace\\submission_MM.csv")
+df_submisHM = pd.read_csv(".\\csv\\SFace\\submission_HM.csv")
 
 
 X_train = df_train.drop("label", axis=1)
@@ -76,11 +76,11 @@ decision_function_shape = ['ovo', 'ovr'] # one vs one and one vs rest
 
 model = SVC(kernel="linear", probability=True, decision_function_shape="ovr")
 model.fit(X_train, y_train)
-joblib.dump(model, f".\\model\\modelSVM.joblib")
+joblib.dump(model, f".\\model\\modelSVM_SFace.joblib")
 
 accuracy_model = model.score(X_train, y_train)
 
-with open(".\\evaluate\\modelSVM.txt", "a") as f:
+with open(".\\evaluate\\modelSVM_SFace.txt", "a") as f:
     f.write("====================================")
     f.write("\n")
     f.write(f"Accuracy Model: {accuracy_model}")
