@@ -4,7 +4,9 @@ import numpy as np
 from sklearn.neural_network import MLPClassifier
 from sklearn import base
 from sklearn.neural_network import MLPClassifier
+from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
+
 import joblib
 
 df_train = pd.read_csv(".\\csv\\train.csv")
@@ -45,18 +47,14 @@ y_testWM = y_testWM.reshape((-1, 1))
 y_testMM = y_testMM.reshape((-1, 1))
 y_testHM = y_testHM.reshape((-1, 1))
 
-# SOLVER = ["sgd", "lbfgs", "adam"]
-# ACTIVATION = ["identity", "tanh", "logistic", "relu"]
-# NUMBER_OF_LAYERS = [1,2,3]
-# HIDDEN_LAYER_UNITS = [32, 64, 128, 256, 512, 1024]
-
-SOLVER = ["adam"]
-ACTIVATION = ["relu"]
-NUMBER_OF_LAYERS = [3]
-HIDDEN_LAYER_UNITS = [64]
 
 # Train model with different hyperparameters
-def model():
+def modelMPL():
+    SOLVER = ["sgd", "lbfgs", "adam"]
+    ACTIVATION = ["identity", "tanh", "logistic", "relu"]
+    NUMBER_OF_LAYERS = [1,2,3]
+    HIDDEN_LAYER_UNITS = [32, 64, 128, 256, 512, 1024]
+
     for solver in SOLVER:
         for activation in ACTIVATION:
             for layer in NUMBER_OF_LAYERS:
@@ -76,10 +74,7 @@ def model():
                     )
                     
                     model.fit(X_train, y_train)
-                    
-                    # Save model
-                    joblib.dump(model, f".\\model\\modelNN_{solver}_{activation}_{layer}_{layer_inits}.joblib")  
-                    
+                                
                     accuracy_model = model.score(X_train, y_train)
                     
                     with open(".\\evaluate\\model.txt", "a") as f:
@@ -93,11 +88,47 @@ def model():
                         f.write("\n")
 
                     # Evaluate the model with test data
-                    evaluation_model(model, X_train, y_train, "Model")
-                    evaluation_model(model, X_testWM, y_testWM, "WM")
-                    evaluation_model(model, X_testMM, y_testMM, "MM")
-                    evaluation_model(model, X_testHM, y_testHM, "HM")
+                    evaluation_model(model, X_train, y_train, "Testing in train data")
+                    evaluation_model(model, X_testWM, y_testWM, "Testing in WM data")
+                    evaluation_model(model, X_testMM, y_testMM, "Testing in MM data")
+                    evaluation_model(model, X_testHM, y_testHM, "Testing in HM data")
 
+def modelSVC():
+    C = [1.0]
+    KERNEL = ["linear", "poly", "rbf", "sigmoid", "precomputed"]
+    PROBABILITIES = [True, False]
+    DECISION_FUNCTION_SHAPES = ["ovo", "ovr"]  # one vs one and one vs rest
+
+    for c in C:
+        for kernel in KERNEL:
+            for probability in PROBABILITIES:
+                for decision_function_shape in DECISION_FUNCTION_SHAPES:
+                    model = SVC(
+                        C = c,
+                        kernel=kernel,
+                        probability=probability,
+                        decision_function_shape=decision_function_shape,
+                    )
+
+                    model.fit(X_train, y_train)
+
+                    accuracy_model = model.score(X_train, y_train)
+
+                    with open(".\\evaluate\\modelSVM.txt", "a") as f:
+                        f.write("====================================")
+                        f.write("\n")
+                        f.write(
+                            f"C: {c} - kernel: {kernel} - probability: {probability} - decision_function_shape: {decision_function_shape}"
+                        )
+                        f.write("\n")
+                        f.write(f"Accuracy Model: {accuracy_model}")
+                        f.write("\n")
+
+                    # Evaluate the model with test data
+                    evaluation_model(model, X_train, y_train, "Testing in train data")
+                    evaluation_model(model, X_testWM, y_testWM, "Testing in WM data")
+                    evaluation_model(model, X_testMM, y_testMM, "Testing in MM data")
+                    evaluation_model(model, X_testHM, y_testHM, "Testing in HM data")
 
 def evaluation_model(model, X_test, y_test, message):
     y_pred = model.predict(X_test)
@@ -126,4 +157,4 @@ def evaluation_model(model, X_test, y_test, message):
         f.write(evaluation_report)
         f.write("\n")
 
-model()
+modelMPL()
