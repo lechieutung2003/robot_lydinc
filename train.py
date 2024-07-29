@@ -110,7 +110,6 @@ def modelSVC(C=1.0, kernel='linear', probability=True, decision_function_shape="
     evaluation_model(model, X_testMM, y_testMM, "Testing in MM data")
     evaluation_model(model, X_testHM, y_testHM, "Testing in HM data")
 
-
 def evaluation_model(model, X_test, y_test, message):
     y_pred = model.predict(X_test)
     y_pred = y_pred.reshape((-1, 1))
