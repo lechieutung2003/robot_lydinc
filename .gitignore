@@ -1,1 +1,5 @@
-venv
+venv/
+thu nghiem/
+base/
+__pycache__/
+.vscode/
