@@ -51,6 +51,7 @@ class Embedding:
                 data.append([label] + face.embedding)
         
 
+
     def save(self):
         # create train.csv
         header_train = []
