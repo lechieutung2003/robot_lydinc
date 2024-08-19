@@ -2,12 +2,9 @@ import cv2
 import numpy as np
 from detect import FaceDetector
 from joblib import load
-import os
 
-# Load the model train
 modelNN = load(".\\model\\model_adam_relu_3_64.joblib")
 modelSVM = load(".\\model\\modelSVM.joblib")
-
 
 # Load InsightFace model
 detector = FaceDetector()
@@ -19,8 +16,7 @@ while True:
     ret, frame = cap.read()
     if not ret:
         continue
-    
-    
+        
     detected_faces = detector.detect(frame)
         
     for result in detected_faces:
@@ -32,29 +28,26 @@ while True:
             embedding = face.embedding
             embedding = np.array(embedding).reshape(1, -1)
 
-#             predictions = modelSVM.predict(embedding)
-#             predicted_label = predictions[0]
+            # Get predictions from both models
+            predictions1 = modelNN.predict_proba(embedding)
+            predictions2 = modelSVM.predict_proba(embedding)
 
-            predictions = model.predict_proba(embedding)
-            max_probability = np.max(predictions)
-            predicted_label = model.classes_[np.argmax(predictions)]
-            
-            if max_probability > 0.5:
+            # Use max voting
+            final_predictions = np.argmax(predictions1 + predictions2, axis=1)
+            predicted_label = modelNN.classes_[final_predictions[0]]
+
+            # Get max probability
+            max_probability = np.max(predictions1 + predictions2)
+
+            if max_probability > 0.8:
                 predicted_label = f"Person {predicted_label}"
             else:
                 predicted_label = "Unknown"
-
-              
-            # Save the detected face to a folder named after the person detected
-            os.makedirs(predicted_label, exist_ok=True)
-            face_img = frame[y:h, x:w]
-            cv2.imwrite(f"{predicted_label}/face_{img_counter}.jpg", face_img)
-            img_counter += 1
-              
+            
             cv2.rectangle(frame, (x, y), (w, h), (0, 255, 0), 2)
             cv2.putText(
                 frame,
-                predicted_label,
+                str(predicted_label),
                 (x, y - 10),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.9,

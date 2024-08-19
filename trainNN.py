@@ -8,25 +8,25 @@ from sklearn.metrics import confusion_matrix, accuracy_score, classification_rep
 import joblib
 
 df_train = pd.read_csv(".\\csv\\train.csv")
-dt_testWM = pd.read_csv(".\\csv\\testWM.csv")
-dt_testMM = pd.read_csv(".\\csv\\testMM.csv")
-dt_testHM = pd.read_csv(".\\csv\\testHM.csv")
-ds_submisWM = pd.read_csv(".\\csv\\submissionWM.csv")
-ds_submisMM = pd.read_csv(".\\csv\\submissionMM.csv")
-ds_submisHM = pd.read_csv(".\\csv\\submissionHM.csv")
+df_testWM = pd.read_csv(".\\csv\\testWM.csv")
+df_testMM = pd.read_csv(".\\csv\\testMM.csv")
+df_testHM = pd.read_csv(".\\csv\\testHM.csv")
+df_submisWM = pd.read_csv(".\\csv\\submissionWM.csv")
+df_submisMM = pd.read_csv(".\\csv\\submissionMM.csv")
+df_submisHM = pd.read_csv(".\\csv\\submissionHM.csv")
 
 # Split images & labels as X & y
 X_train = df_train.drop("label", axis=1)
 y_train = df_train["label"]
 
-y_testWM = ds_submisWM["label"]
-X_testWM = dt_testWM
+y_testWM = df_submisWM["label"]
+X_testWM = df_testWM
 
-y_testMM = ds_submisMM["label"]
-X_testMM = dt_testMM
+y_testMM = df_submisMM["label"]
+X_testMM = df_testMM
 
-y_testHM = ds_submisHM["label"] 
-X_testHM = dt_testHM
+y_testHM = df_submisHM["label"] 
+X_testHM = df_testHM
 
 # Convert from Pandas DataFrame to Numpy Array to be able to perform reshape operations in the next step
 X_train = X_train.to_numpy()
@@ -78,7 +78,7 @@ def model():
                     model.fit(X_train, y_train)
                     
                     # Save model
-                    joblib.dump(model, f".\\model\\model_{solver}_{activation}_{layer}_{layer_inits}.joblib")  
+                    joblib.dump(model, f".\\model\\modelNN_{solver}_{activation}_{layer}_{layer_inits}.joblib")  
                     
                     accuracy_model = model.score(X_train, y_train)
                     
@@ -127,4 +127,3 @@ def evaluation_model(model, X_test, y_test, message):
         f.write("\n")
 
 model()
-
