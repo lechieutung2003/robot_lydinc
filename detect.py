@@ -38,6 +38,7 @@ class FaceDetector():
         "magpack": 'false',
         "use_rotation": 'false'
         }
+
         return self.req_body
     
     def detect(self, frame):
