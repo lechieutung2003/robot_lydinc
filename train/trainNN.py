@@ -7,123 +7,141 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
 import joblib
 
-df_train = pd.read_csv(".\\csv\\SFace\\train.csv")
-df_testWM = pd.read_csv(".\\csv\\SFace\\test_WM.csv")
-df_testMM = pd.read_csv(".\\csv\\SFace\\test_MM.csv")
-df_testHM = pd.read_csv(".\\csv\\SFace\\test_HM.csv")
-df_submisWM = pd.read_csv(".\\csv\\SFace\\submission_WM.csv")
-df_submisMM = pd.read_csv(".\\csv\\SFace\\submission_MM.csv")
-df_submisHM = pd.read_csv(".\\csv\\SFace\\submission_HM.csv")
+models = ['ArcFace', 'Facenet', 'Facenet512', 'GhostFaceNet', 'SFace']
+# models = ['Facenet512']
+for mod in models:
+    csv_dir = f"D:\\Artificial Intelligence\\git clone\\robot_lydinc\\csv\\identifyV2\\{mod}"
+    model_dir = "D:\\Artificial Intelligence\\git clone\\robot_lydinc\\model\\NN"
+    evaluate_dir = "D:\\Artificial Intelligence\\git clone\\robot_lydinc\\evaluate\\NN"
 
-# Split images & labels as X & y
-X_train = df_train.drop("label", axis=1)
-y_train = df_train["label"]
+    # Construct the full file paths
+    train_file = os.path.join(csv_dir, "train.csv")
+    testWM_file = os.path.join(csv_dir, "testWM.csv")
+    testMM_file = os.path.join(csv_dir, "testMM.csv")
+    testHM_file = os.path.join(csv_dir, "testHM.csv")
+    submisWM_file = os.path.join(csv_dir, "submissionWM.csv")
+    submisMM_file = os.path.join(csv_dir, "submissionMM.csv")
+    submisHM_file = os.path.join(csv_dir, "submissionHM.csv")
 
-y_testWM = df_submisWM["label"]
-X_testWM = df_testWM
+    df_train = pd.read_csv(train_file)
+    df_testWM = pd.read_csv(testWM_file)
+    df_testMM = pd.read_csv(testMM_file)
+    df_testHM = pd.read_csv(testHM_file)
+    df_submisWM = pd.read_csv(submisWM_file)
+    df_submisMM = pd.read_csv(submisMM_file)
+    df_submisHM = pd.read_csv(submisHM_file)
 
-y_testMM = df_submisMM["label"]
-X_testMM = df_testMM
+    # Split images & labels as X & y
+    X_train = df_train.drop("label", axis=1)
+    y_train = df_train["label"]
 
-y_testHM = df_submisHM["label"] 
-X_testHM = df_testHM
+    y_testWM = df_submisWM["label"]
+    X_testWM = df_testWM
 
-# Convert from Pandas DataFrame to Numpy Array to be able to perform reshape operations in the next step
-X_train = X_train.to_numpy()
-y_train = y_train.to_numpy()
+    y_testMM = df_submisMM["label"]
+    X_testMM = df_testMM
 
-X_testWM = X_testWM.to_numpy()
-y_testWM = y_testWM.to_numpy()
-X_testMM = X_testMM.to_numpy()
-y_testMM = y_testMM.to_numpy()
-X_testHM = X_testHM.to_numpy()
-y_testHM = y_testHM.to_numpy()
+    y_testHM = df_submisHM["label"]
+    X_testHM = df_testHM
 
-# Reshape the labels to be a single column
-y_train = y_train.reshape((-1, 1))
-y_testWM = y_testWM.reshape((-1, 1))
-y_testMM = y_testMM.reshape((-1, 1))
-y_testHM = y_testHM.reshape((-1, 1))
+    # Convert from Pandas DataFrame to Numpy Array to be able to perform reshape operations in the next step
+    X_train = X_train.to_numpy()
+    y_train = y_train.to_numpy()
 
-# SOLVER = ["sgd", "lbfgs", "adam"]
-# ACTIVATION = ["identity", "tanh", "logistic", "relu"]
-# NUMBER_OF_LAYERS = [1,2,3]
-# HIDDEN_LAYER_UNITS = [32, 64, 128, 256, 512, 1024]
+    X_testWM = X_testWM.to_numpy()
+    y_testWM = y_testWM.to_numpy()
+    X_testMM = X_testMM.to_numpy()
+    y_testMM = y_testMM.to_numpy()
+    X_testHM = X_testHM.to_numpy()
+    y_testHM = y_testHM.to_numpy()
 
-SOLVER = ["adam"]
-ACTIVATION = ["relu"]
-NUMBER_OF_LAYERS = [3]
-HIDDEN_LAYER_UNITS = [64]
+    # Reshape the labels to be a single column
+    y_train = y_train.reshape((-1, 1))
+    y_testWM = y_testWM.reshape((-1, 1))
+    y_testMM = y_testMM.reshape((-1, 1))
+    y_testHM = y_testHM.reshape((-1, 1))
 
-# Train model with different hyperparameters
-def model():
-    for solver in SOLVER:
-        for activation in ACTIVATION:
-            for layer in NUMBER_OF_LAYERS:
-                for layer_inits in HIDDEN_LAYER_UNITS:
+    # SOLVER = ["sgd", "lbfgs", "adam"]
+    # ACTIVATION = ["identity", "tanh", "logistic", "relu"]
+    # NUMBER_OF_LAYERS = [1,2,3]
+    # HIDDEN_LAYER_UNITS = [32, 64, 128, 256, 512, 1024]
 
-                    hidden_layer_sizes = ()
-                    for i in range(layer):
-                        hidden_layer_sizes += (layer_inits,)
+    SOLVER = ["adam"]
+    ACTIVATION = ["relu"]
+    NUMBER_OF_LAYERS = [3]
+    HIDDEN_LAYER_UNITS = [64]
 
-                    model = MLPClassifier(
-                        solver=solver,
-                        activation=activation,
-                        hidden_layer_sizes=hidden_layer_sizes,
-                        early_stopping=True,
-                        verbose=False,
-                        max_iter=200,
-                    )
-                    
-                    model.fit(X_train, y_train)
-                    
-                    # Save model
-                    joblib.dump(model, f".\\model\\modelNN_SFace_{solver}_{activation}_{layer}_{layer_inits}.joblib")  
-                    
-                    accuracy_model = model.score(X_train, y_train)
-                    
-                    with open(".\\evaluate\\model.txt", "a") as f:
-                        f.write("====================================")
-                        f.write("\n")
-                        f.write(
-                            f"Solver: {solver} - Activation: {activation} - hidden layer sizes {hidden_layer_sizes}"
+
+    # Train model with different hyperparameters
+    def model():
+        for solver in SOLVER:
+            for activation in ACTIVATION:
+                for layer in NUMBER_OF_LAYERS:
+                    for layer_inits in HIDDEN_LAYER_UNITS:
+
+                        hidden_layer_sizes = ()
+                        for i in range(layer):
+                            hidden_layer_sizes += (layer_inits,)
+
+                        model = MLPClassifier(
+                            solver=solver,
+                            activation=activation,
+                            hidden_layer_sizes=hidden_layer_sizes,
+                            early_stopping=True,
+                            verbose=False,
+                            max_iter=200,
                         )
-                        f.write("\n")
-                        f.write(f"Accuracy Model: {accuracy_model}")
-                        f.write("\n")
 
-                    # Evaluate the model with test data
-                    evaluation_model(model, X_train, y_train, "Model")
-                    evaluation_model(model, X_testWM, y_testWM, "WM")
-                    evaluation_model(model, X_testMM, y_testMM, "MM")
-                    evaluation_model(model, X_testHM, y_testHM, "HM")
+                        model.fit(X_train, y_train)
+
+                        # Save model
+                        joblib.dump(model, os.path.join(model_dir, f"modelNN_{mod}.joblib"))
+
+                        accuracy_model = model.score(X_train, y_train)
+
+                        with open(os.path.join(evaluate_dir, f"modelNN_{mod}.txt"), "a") as f:
+                            f.write("====================================")
+                            f.write("\n")
+                            f.write(
+                                f"Solver: {solver} - Activation: {activation} - hidden layer sizes {hidden_layer_sizes}"
+                            )
+                            f.write("\n")
+                            f.write(f"Accuracy Model: {accuracy_model}")
+                            f.write("\n")
+
+                        # Evaluate the model with test data
+                        evaluation_model(model, X_train, y_train, "Model")
+                        evaluation_model(model, X_testWM, y_testWM, "WM")
+                        evaluation_model(model, X_testMM, y_testMM, "MM")
+                        evaluation_model(model, X_testHM, y_testHM, "HM")
 
 
-def evaluation_model(model, X_test, y_test, message):
-    y_pred = model.predict(X_test)
-    y_pred = y_pred.reshape((-1, 1))
-    cm = confusion_matrix(y_test, y_pred)
-    accuracy = accuracy_score(y_test, y_pred)
-    evaluation_report = classification_report(y_test, y_pred)
+    def evaluation_model(model, X_test, y_test, message):
+        y_pred = model.predict(X_test)
+        y_pred = y_pred.reshape((-1, 1))
+        cm = confusion_matrix(y_test, y_pred)
+        accuracy = accuracy_score(y_test, y_pred)
+        evaluation_report = classification_report(y_test, y_pred)
 
-    with open(".\\evaluate\\model_SFace.txt", "a") as f:
-        f.write(f"============= {message} =============")
-        f.write("\n")
-        f.write(f"Testing the trained model:")
-        f.write("\n")
+        with open(os.path.join(evaluate_dir, f"modelNN_{mod}.txt"), "a") as f:
+            f.write(f"============= {message} =============")
+            f.write("\n")
+            f.write(f"Testing the trained model:")
+            f.write("\n")
 
-        # Calculate confusion matrix
-        f.write(f"Confusion Matrix:")
-        f.write("\n")
-        f.write(np.array2string(cm))
-        f.write("\n")
-        # Calculate accuracy
-        f.write(f"Accuracy: {accuracy}")
-        f.write("\n")
+            # Calculate confusion matrix
+            f.write(f"Confusion Matrix:")
+            f.write("\n")
+            f.write(np.array2string(cm))
+            f.write("\n")
+            # Calculate accuracy
+            f.write(f"Accuracy: {accuracy}")
+            f.write("\n")
 
-        # Calculate and print evaluation report
-        f.write(f"Evaluation Report:")
-        f.write(evaluation_report)
-        f.write("\n")
+            # Calculate and print evaluation report
+            f.write(f"Evaluation Report:")
+            f.write(evaluation_report)
+            f.write("\n")
 
-model()
+
+    model()
