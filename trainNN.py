@@ -4,10 +4,10 @@ import numpy as np
 from sklearn.neural_network import MLPClassifier
 from sklearn import base
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
 import joblib
+from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
 
-df_train = pd.read_csv(".\\csv\\train.csv")
+df_train = pd.read_csv(".\\csv\\databaseV4\\train.csv")
 df_testWM = pd.read_csv(".\\csv\\testWM.csv")
 df_testMM = pd.read_csv(".\\csv\\testMM.csv")
 df_testHM = pd.read_csv(".\\csv\\testHM.csv")
@@ -25,7 +25,7 @@ X_testWM = df_testWM
 y_testMM = df_submisMM["label"]
 X_testMM = df_testMM
 
-y_testHM = df_submisHM["label"] 
+y_testHM = df_submisHM["label"]
 X_testHM = df_testHM
 
 # Convert from Pandas DataFrame to Numpy Array to be able to perform reshape operations in the next step
@@ -55,6 +55,7 @@ ACTIVATION = ["relu"]
 NUMBER_OF_LAYERS = [3]
 HIDDEN_LAYER_UNITS = [64]
 
+
 # Train model with different hyperparameters
 def model():
     for solver in SOLVER:
@@ -74,14 +75,17 @@ def model():
                         verbose=False,
                         max_iter=200,
                     )
-                    
+
                     model.fit(X_train, y_train)
-                    
+
                     # Save model
-                    joblib.dump(model, f".\\model\\modelNN_{solver}_{activation}_{layer}_{layer_inits}.joblib")  
-                    
+                    joblib.dump(
+                        model,
+                        f".\\model\\databaseV4\\modelNN_{solver}_{activation}_{layer}_{layer_inits}.joblib",
+                    )
+
                     accuracy_model = model.score(X_train, y_train)
-                    
+
                     with open(".\\evaluate\\model.txt", "a") as f:
                         f.write("====================================")
                         f.write("\n")
@@ -94,9 +98,9 @@ def model():
 
                     # Evaluate the model with test data
                     evaluation_model(model, X_train, y_train, "Model")
-                    evaluation_model(model, X_testWM, y_testWM, "WM")
-                    evaluation_model(model, X_testMM, y_testMM, "MM")
-                    evaluation_model(model, X_testHM, y_testHM, "HM")
+                    # evaluation_model(model, X_testWM, y_testWM, "WM")
+                    # evaluation_model(model, X_testMM, y_testMM, "MM")
+                    # evaluation_model(model, X_testHM, y_testHM, "HM")
 
 
 def evaluation_model(model, X_test, y_test, message):
@@ -125,5 +129,6 @@ def evaluation_model(model, X_test, y_test, message):
         f.write(f"Evaluation Report:")
         f.write(evaluation_report)
         f.write("\n")
+
 
 model()

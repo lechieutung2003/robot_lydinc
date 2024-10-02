@@ -33,7 +33,7 @@ def evaluation_model(model, X_test, y_test, message):
         f.write("\n")
 
 
-df_train = pd.read_csv(".\\csv\\train.csv")
+df_train = pd.read_csv(".\\csv\\databaseV4\\train.csv")
 df_testWM = pd.read_csv(".\\csv\\testWM.csv")
 df_testMM = pd.read_csv(".\\csv\\testMM.csv")
 df_testHM = pd.read_csv(".\\csv\\testHM.csv")
@@ -70,13 +70,13 @@ y_testMM = y_testMM.reshape((-1, 1))
 y_testHM = y_testHM.reshape((-1, 1))
 
 C_regularization = 0.0
-KERNEL = ['linear', 'poly', 'rbf', 'sigmoid', 'precomputed']
+KERNEL = ["linear", "poly", "rbf", "sigmoid", "precomputed"]
 probability = True
-decision_function_shape = ['ovo', 'ovr'] # one vs one and one vs rest
+decision_function_shape = ["ovo", "ovr"]  # one vs one and one vs rest
 
 model = SVC(kernel="linear", probability=True, decision_function_shape="ovr")
 model.fit(X_train, y_train)
-joblib.dump(model, f".\\model\\modelSVM.joblib")
+joblib.dump(model, f".\\model\\databaseV4\\modelSVM.joblib")
 
 accuracy_model = model.score(X_train, y_train)
 

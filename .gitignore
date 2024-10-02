@@ -1,2 +1,6 @@
 __pycache__
 .venv
+deepface/
+.vscode/
+venv/
+thu nghiem/
