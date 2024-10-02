@@ -4,3 +4,11 @@ deepface/
 .vscode/
 venv/
 thu nghiem/
+base/
+evaluate/
+input/
+outpu/
+output/
+capture_face.py
+extract_feature_to_csv.py
+

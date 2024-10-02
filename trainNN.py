@@ -7,7 +7,7 @@ from sklearn.neural_network import MLPClassifier
 import joblib
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
 
-df_train = pd.read_csv(".\\csv\\databaseV4\\train.csv")
+df_train = pd.read_csv(".\\csv\\databaseV5\\train.csv")
 df_testWM = pd.read_csv(".\\csv\\testWM.csv")
 df_testMM = pd.read_csv(".\\csv\\testMM.csv")
 df_testHM = pd.read_csv(".\\csv\\testHM.csv")
@@ -81,7 +81,7 @@ def model():
                     # Save model
                     joblib.dump(
                         model,
-                        f".\\model\\databaseV4\\modelNN_{solver}_{activation}_{layer}_{layer_inits}.joblib",
+                        f".\\model\\databaseV5\\modelNN_{solver}_{activation}_{layer}_{layer_inits}.joblib",
                     )
 
                     accuracy_model = model.score(X_train, y_train)
