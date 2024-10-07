@@ -6,14 +6,14 @@ from scipy.stats import mode
 
 
 modelLR = load(".\\model\\databaseV5\\modelLogisticRegression_best.joblib")
-modelNN = load(".\\model\\databaseV5\\model_adam_relu_3_64.joblib")
+modelNN = load(".\\model\\databaseV5\\modelNN_adam_relu_3_64.joblib")
 modelSVM = load(".\\model\\databaseV5\\modelSVM.joblib")
 
 # Load InsightFace model
 detector = FaceDetector()
 
-cap = cv2.VideoCapture(0)
-img_counter = 0
+video_path = "F:\\LYDINC\\AI\\robot_lydinc\\video\\IMG_9686.MOV"
+cap = cv2.VideoCapture(video_path)
 
 while True:
     ret, frame = cap.read()
