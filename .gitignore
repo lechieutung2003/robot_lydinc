@@ -11,4 +11,5 @@ outpu/
 output/
 capture_face.py
 extract_feature_to_csv.py
+video/
 
